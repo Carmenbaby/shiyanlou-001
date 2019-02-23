@@ -28,20 +28,23 @@ def calculator(value):
     return sum
 
 def hanle_data(arg):
-    key,value = arg.split(':')
+    if arg.count(':') != 1:
+        print('Parameter Error')
+        return
 
+    key,value = arg.split(':')
     try:
         key = int(key)
         value = int(value)
     except:
-        print('parameter Error')
+        print('Parameter Error')
         return 
     output_dict[key] = calculator(value)
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('parameter Error')
+        print('Parameter Error')
 
     for arg in sys.argv[1:]:
         hanle_data(arg)
