@@ -4,9 +4,9 @@ import sys
 import csv
 import getopt
 from collections import namedtuple,Iterable
-from configparser import ConfigParser
+import configparser
 
- from datetime import datetime
+from datetime import datetime
 
 import queue
 from multiprocessing import Process,Queue
@@ -38,25 +38,29 @@ class Args(object):
 
     def __init__(self):
         # 保存命令行参数列表
-		self._cityname = 'DEFAULT'
-		
-		opts,arg = getopt.getopt(sys.argv[1:], '-C: -c: -d: -o:',['cityname=','configfile=','userdata=','resultdata'])
-		for opt_name,opt_value in opts:
-			if opt_name = ['-C','cityname']:
-				self._cityname = opt_value
-			if opt_name = ['-c','configfile']:
-				self._configfile = opt_value
-			if opt_name = ['-d','userdata']:
-				self._userdata = opt_value
-			if opt_name = ['-o','resultdata']:
-				self._resultdata = opt_value
+        self._cityname = 'DEFAULT'
+        self._configfile = None
+        self._userdata = None
+        self._resultdata = None
 
-	'''
+        opts,arg = getopt.getopt(sys.argv[1:], '-C: -c: -d: -o:',['cityname=','configfile=','userdata=','resultdata'])
+        for opt_name,opt_value in opts:
+            if opt_name in ('-C','cityname'):
+                self._cityname = opt_value.upper()
+            if opt_name in ('-c','configfile'):
+                self._configfile = opt_value
+                #print(self._configfile)
+            if opt_name in ('-d','userdata'):
+                self._userdata = opt_value
+            if opt_name in ('-o','resultdata'):
+                self._resultdata = opt_value
+
+    '''
     def _value_after_option(self, option):
         """
         内部函数，用来获取跟在选项后面的值
         """
-		
+
         try:
             # 获得选项位置
             index = self.args.index(option)
@@ -65,14 +69,14 @@ class Args(object):
         except (ValueError, IndexError):
             print('Parameter Error')
             exit()
-	'''
-	@property
-	def cityname_path(self):
-		'''
-		城市名称
-		'''
-		return self._cityname
-	
+    '''
+    @property
+    def cityname_path(self):
+        '''
+        城市名称
+        '''
+        return self._cityname
+
     @property
     def config_path(self):
         """
@@ -95,7 +99,7 @@ class Args(object):
         税后工资文件路径
         """
 
-        return self._read_users_data
+        return self._resultdata
 
 
 # 创建一个全局参数类对象供后续使用
@@ -108,11 +112,11 @@ class Config(object):
 
     def __init__(self):
         # 读取配置文件
-		self.configparser = ConfigParser()
-		self.configparser.read(args.config_path, encoding='UTF-8')
+        self.config = configparser.ConfigParser()
+        self.config.read(args.config_path)
         #self.config = self._read_config()
-		
-	'''
+        
+    '''
     def _read_config(self):
         """
         内部函数，用来读取配置文件中的配置项
@@ -130,15 +134,15 @@ class Config(object):
                     exit()
 
         return config
-	'''
-		
+    '''
+        
 
     def _get_config(self, key):
         """
         内部函数，用来获得配置项的值
         """
-		return self.configparser.get(cityname_path,key)
-		
+        return self.config.get(args.cityname_path,key)
+        
 
     @property
     def social_insurance_baseline_low(self):
@@ -267,11 +271,11 @@ class IncomeTaxCalculator(Process):
 
         # 计算税后工资
         tax, remain = self.calc_income_tax_and_remain(income)
-		
-		    #获取计算时的当前时间
-		    d = datetime.now()
-		    str_date = d.strftime('%a-%m-%d %H:%M:%S')
-		
+        
+        #获取计算时的当前时间
+        d = datetime.now()
+        str_date = d.strftime('%a-%m-%d %H:%M:%S')
+        
         # 添加到结果集
         return [employee_id, income, social_insurance_money, tax, remain,str_date]
 
