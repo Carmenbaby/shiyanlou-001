@@ -141,7 +141,7 @@ class Config(object):
         """
         内部函数，用来获得配置项的值
         """
-        return self.config.get(args.cityname_path,key)
+        return float（self.config.get(args.cityname_path,key)）
         
 
     @property
