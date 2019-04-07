@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>文章列表</title>
+    <title>????</title>
 </head>
 <body>
     <ol>
-        {% for file in files_json %}
-            <li>{{file['title']}}</li>
+        {% for file in file_data %}
+            <li>
+                <a href="/files/{{file.id}}">{{file.title}}</a>
+            </li>
         {% endfor %}
     </ol>
 </body>

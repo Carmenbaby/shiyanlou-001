@@ -10,12 +10,14 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/flask'
 db = SQLAlchemy(app)
 
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+
+    def __init__(self,name):
+        self.name = name
+
 class File(db.Model):
-    #id：文章的ID，主键约束（db.Integer）
-    #title: 文章名称（db.String(80)）
-    #created_time: 文章创建时间（db.DateTime）
-    #category_id: 文章的分类，外键约束（db.Integer, db.ForeignKey(...)）
-    #content: 文章的内容（db.Text）
     id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(89))
     created_time = db.Column(db.DateTime)
@@ -23,20 +25,11 @@ class File(db.Model):
     category = db.relationship('Category')
     content = db.Column(db.Text)
 
-    def __init__(self, title, created_time, category_id, content):
+    def __init__(self, title, created_time, category, content):
         self.title = title
         self.created_time = created_time
-        self.category_id = category_id
+        self.category = category
         self.content = content
-
-class Category(db.Model):
-    #id：类别的ID，主键约束（db.Integer）
-    #name：类别的名称（db.String(80)）
-    id = db.Column(db.Integer, primary_key)
-    name = db.Column(db.String(80))
-
-    def __init__(self,name):
-        self.name = name
 
 @app.route('/')
 def index():
@@ -64,6 +57,7 @@ def not_f(error):
 if __name__ == '__main__':
 
     #创建表 
+    '''
     db.create_all()
     java = Category('Java')
     python = Category('Python')
@@ -74,5 +68,6 @@ if __name__ == '__main__':
     db.session.add(file1)
     db.session.add(file2)
     db.session.commit()
+    '''
     #运行
     app.run(debug=True,port=3000)
