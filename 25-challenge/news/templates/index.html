@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>????</title>
+</head>
+<body>
+    <ol>
+        {% for file in file_data %}
+            <li>
+                <a href="/files/{{file.id}}">{{file.title}}</a>
+                <ul>
+                    {% for tag in file.tags %}
+                      <li>{{ tag }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ol>
+</body>
+</html>
