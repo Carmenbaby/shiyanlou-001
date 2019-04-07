@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import render_template
+from flask import abort
 import os
 import json
 
@@ -31,10 +32,15 @@ def file(filename):
         with open(file_path) as fd:
             return render_template('file.html',file_json = json.load(fd))
     else:
-        return render_template('404.html')
+        abrot(404)
+
+@app.errorhandler(404)
+def not_f(error):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     #project_dir 项目目录地址 和 存放files文件目录地址
-    project_dir = os.path.dirname(os.path.dirname(__file__))
-    files_dir = os.path.join(project_dir, 'files')
+     #这种写法 directory = os.path.join(os.getcwd(), '..', 'files') 
+    project_dir = os.path.dirname(os.path.dirname(__file__))  #linux 使用getcwd()
+
     app.run(debug=True,port=3000)
